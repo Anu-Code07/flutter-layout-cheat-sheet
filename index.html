@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flutter UI Layout Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2230;--border:#30363d;--text:#e6edf3;--muted:#8b949e;
+  --blue:#58a6ff;--green:#3fb950;--orange:#f0883e;--purple:#d2a8ff;--red:#ff7b72;--teal:#39c5cf;--yellow:#e3b341;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+/* ── HEADER ── */
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:24px 24px 0;text-align:center}
+.header h1{font-size:24px;font-weight:700;margin-bottom:4px}
+.header h1 span{color:var(--blue)}
+.header p{color:var(--muted);font-size:13px;margin-bottom:14px}
+.nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;justify-content:center;flex-wrap:wrap}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{background:none;border:none;color:var(--muted);font-family:'Inter',sans-serif;font-size:12px;padding:9px 11px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+.nav-btn:hover{color:var(--text)}.nav-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ── LAYOUT ── */
+.container{max-width:1300px;margin:0 auto;padding:28px 16px 80px}
+.section{display:none}.section.active{display:block}
+.sec-title{font-size:20px;font-weight:700;margin-bottom:3px}
+.sec-desc{color:var(--muted);font-size:13px;margin-bottom:20px}
+
+/* 4-col grid: mockup | anno | code | example */
+.entry{display:grid;grid-template-columns:180px 1fr 1fr 1fr;gap:16px;margin-bottom:36px;align-items:start}
+@media(max-width:1000px){.entry{grid-template-columns:1fr 1fr}.entry>*:nth-child(3),.entry>*:nth-child(4){grid-column:span 2}}
+@media(max-width:600px){.entry{grid-template-columns:1fr}.entry>*{grid-column:span 1}}
+.divider{border:none;border-top:1px solid var(--border);margin:0 0 32px}
+
+/* ── PHONE ── */
+.phone{width:175px;border:2px solid #444c56;border-radius:22px;background:#0d1117;overflow:hidden}
+.phone-status{height:22px;background:#161b22;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 10px;gap:4px}
+.ps-dot{width:5px;height:5px;border-radius:50%;background:#444c56}
+.phone-body{padding:7px;display:flex;flex-direction:column;gap:6px}
+
+/* labeled block */
+.lb{position:relative}.lb-tag{position:absolute;top:-9px;left:5px;border-radius:4px;font-size:9px;font-weight:700;padding:1px 6px;white-space:nowrap;z-index:2;font-family:'JetBrains Mono',monospace;border:1px solid}
+.lb-tag.b{color:var(--blue);border-color:#1f3a5c;background:#0b1520}
+.lb-tag.g{color:var(--green);border-color:#1a3320;background:#081508}
+.lb-tag.p{color:var(--purple);border-color:#3a2f55;background:#120e20}
+.lb-tag.o{color:var(--orange);border-color:#4a3015;background:#150e05}
+.lb-tag.t{color:var(--teal);border-color:#0e2a30;background:#051015}
+.lb-tag.r{color:var(--red);border-color:#3a1f1f;background:#150808}
+.lb-tag.y{color:var(--yellow);border-color:#3a3010;background:#151005}
+.lb-border{border-radius:6px;padding:5px;border:1px dashed}
+.lb-border.b{border-color:#1f3a5c}.lb-border.g{border-color:#1a3320}.lb-border.p{border-color:#3a2f55}
+.lb-border.o{border-color:#4a3015}.lb-border.t{border-color:#0e2a30}.lb-border.r{border-color:#3a1f1f}.lb-border.y{border-color:#3a3010}
+
+/* mock blocks */
+.mc{border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500}
+.mb{background:#0e2030;color:#58a6ff;border:1px solid #1a3a55}
+.mg{background:#0e2015;color:#3fb950;border:1px solid #1a3820}
+.mp{background:#1a1530;color:#d2a8ff;border:1px solid #2e2550}
+.mo{background:#1e1508;color:#f0883e;border:1px solid #3a2510}
+.mt{background:#051a1f;color:#39c5cf;border:1px solid #0e2a32}
+.mr{background:#1e0d0d;color:#ff7b72;border:1px solid #3a1a1a}
+.mgy{background:#161b22;color:#8b949e;border:1px solid #30363d}
+.my{background:#1a1505;color:#e3b341;border:1px solid #3a2e10}
+
+/* ── ANNO ── */
+.anno-name{font-size:15px;font-weight:700;margin-bottom:4px;font-family:'JetBrains Mono',monospace;color:var(--text)}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px}
+.tb{background:#0e2030;color:#58a6ff;border:1px solid #1a3a55}.tg{background:#0e2015;color:#3fb950;border:1px solid #1a3820}
+.tp{background:#1a1530;color:#d2a8ff;border:1px solid #2e2550}.to{background:#1e1508;color:#f0883e;border:1px solid #3a2510}
+.tr{background:#1e0d0d;color:#ff7b72;border:1px solid #3a1a1a}
+.anno-when{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.anno-when strong{color:var(--orange)}
+.kp{list-style:none;margin-bottom:10px}
+.kp li{font-size:12px;color:var(--muted);padding:2px 0;display:flex;gap:5px}
+.kp li::before{content:'→';color:var(--blue);flex-shrink:0}
+.tree{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.85;background:#0d1117;border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-top:6px}
+.tn{color:var(--blue)}.tw{color:var(--purple)}.tc{color:var(--muted);font-size:10px}
+.i1{padding-left:12px}.i2{padding-left:24px}.i3{padding-left:36px}.i4{padding-left:48px}
+
+/* ── CODE ── */
+.code-block{background:#0d1117;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.code-bar{background:#161b22;padding:5px 12px;font-size:10px;color:var(--muted);border-bottom:1px solid var(--border);display:flex;gap:5px;align-items:center}
+.cd{width:7px;height:7px;border-radius:50%}
+pre{padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.75;overflow-x:auto;color:#e6edf3;white-space:pre}
+.kw{color:#ff7b72}.fn{color:#d2a8ff}.prop{color:#79c0ff}.val{color:#a5d6ff}
+.str{color:#a5d6ff}.num{color:#f0883e}.cmt{color:#8b949e;font-style:italic}.punc{color:#e6edf3}
+
+/* ── EXAMPLE UI ── */
+.ex-ui{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.ex-label{background:var(--bg3);border-bottom:1px solid var(--border);padding:7px 12px;font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+
+/* Example UI internals — real-looking light cards */
+.ex-body{padding:12px;display:flex;flex-direction:column;gap:10px}
+
+/* flight card */
+.fcard{background:#fff;border-radius:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.fcard-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.airline-logo{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.al-indigo{background:#4f46e5;color:#fff}
+.al-air{background:#e50914;color:#fff}
+.al-go{background:#ff6600;color:#fff}
+.route-info{flex:1}
+.route-main{font-size:13px;font-weight:700;color:#111;display:flex;align-items:center;gap:6px}
+.route-sub{font-size:11px;color:#666;margin-top:1px}
+.price-badge{font-size:14px;font-weight:700;color:#16a34a}
+.book-btn{background:#4f46e5;color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;width:100%}
+.stop-pill{font-size:10px;padding:2px 7px;border-radius:20px;background:#dcfce7;color:#15803d;font-weight:600}
+
+/* chat bubble */
+.chat-wrap{display:flex;flex-direction:column;gap:8px;padding:10px}
+.bubble{max-width:75%;padding:8px 12px;font-size:12px;line-height:1.5}
+.bubble.them{background:#f0f0f0;color:#111;border-radius:12px 12px 12px 2px;align-self:flex-start}
+.bubble.me{background:#4f46e5;color:#fff;border-radius:12px 12px 2px 12px;align-self:flex-end}
+.chat-input{display:flex;gap:8px;padding:8px 10px;background:#f8f8f8;border-top:1px solid #eee}
+.chat-input input{flex:1;border:1px solid #ddd;border-radius:20px;padding:6px 12px;font-size:12px;outline:none}
+.send-btn{width:30px;height:30px;border-radius:50%;background:#4f46e5;border:none;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* product grid */
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+.pcard{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.pcard-img{height:70px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.pcard-info{padding:7px 8px}
+.pcard-name{font-size:11px;font-weight:600;color:#111;margin-bottom:2px}
+.pcard-price{font-size:12px;font-weight:700;color:#16a34a}
+.pcard-old{font-size:10px;color:#999;text-decoration:line-through;margin-left:4px}
+
+/* profile */
+.profile-header{background:linear-gradient(135deg,#4f46e5,#7c3aed);padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.avatar{width:52px;height:52px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#4f46e5;border:3px solid rgba(255,255,255,.3)}
+.profile-name{font-size:14px;font-weight:700;color:#fff}
+.profile-sub{font-size:11px;color:rgba(255,255,255,.7)}
+.profile-stats{display:flex;gap:0;width:100%}
+.stat{flex:1;text-align:center;padding:10px 0;background:#fff}
+.stat-n{font-size:14px;font-weight:700;color:#111}
+.stat-l{font-size:10px;color:#666}
+.profile-tabs{display:flex;background:#fff;border-bottom:1px solid #eee}
+.ptab{flex:1;padding:8px;text-align:center;font-size:11px;font-weight:600;color:#999;border-bottom:2px solid transparent}
+.ptab.active{color:#4f46e5;border-bottom-color:#4f46e5}
+
+/* banner stack */
+.banner-stack{position:relative;height:110px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#667eea,#764ba2)}
+.banner-text{position:absolute;bottom:10px;left:12px}
+.banner-title{font-size:13px;font-weight:700;color:#fff}
+.banner-sub{font-size:10px;color:rgba(255,255,255,.8)}
+.banner-skip{position:absolute;top:8px;right:10px;background:rgba(255,255,255,.25);color:#fff;border:none;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px)}
+.banner-badge{position:absolute;top:8px;left:10px;background:#22c55e;color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px}
+
+/* onboarding dots */
+.ob-screen{background:linear-gradient(135deg,#eff6ff,#dbeafe);padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.ob-icon{font-size:36px}
+.ob-title{font-size:14px;font-weight:700;color:#1e3a5f;text-align:center}
+.ob-sub{font-size:11px;color:#4a7fb5;text-align:center}
+.ob-dots{display:flex;gap:5px;justify-content:center}
+.ob-dot{height:6px;border-radius:3px;background:#bfdbfe}
+.ob-dot.active{background:#3b82f6;width:18px}
+.ob-dot:not(.active){width:6px}
+.ob-btn{background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:9px 24px;font-size:12px;font-weight:600;cursor:pointer;width:100%}
+
+/* search bar */
+.search-bar{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:9px 12px}
+.sb-icon{color:#6b7280;font-size:15px}
+.sb-input{flex:1;border:none;outline:none;font-size:13px;color:#111}
+.sb-input::placeholder{color:#9ca3af}
+.sb-filter{background:#f3f4f6;border:none;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:#374151;cursor:pointer}
+
+/* sticky chips */
+.chip-row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:8px 10px;background:#fff;border-bottom:1px solid #eee}
+.chip-row::-webkit-scrollbar{display:none}
+.chip{border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
+.chip.active{background:#4f46e5;color:#fff}
+.chip.inactive{background:#f3f4f6;color:#374151}
+
+/* sliver full */
+.sliver-diag{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:20px}
+.sl-row{padding:9px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);font-size:12px}
+.sl-row:last-child{border-bottom:none}
+.sl-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;font-family:'JetBrains Mono',monospace;white-space:nowrap;min-width:210px;text-align:center}
+.sl-desc{color:var(--muted);line-height:1.5}
+.sl-desc b{font-weight:600}
+
+/* rule grid */
+.rule-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:9px;margin-bottom:20px}
+.rule-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px}
+.rule-q{color:var(--muted);font-size:11px;margin-bottom:4px}
+.rule-a{font-size:14px;font-weight:700;color:var(--blue);font-family:'JetBrains Mono',monospace}
+.golden{background:#0e1d2e;border:1px solid #1f3a5c;border-radius:12px;padding:18px 22px;margin-top:14px}
+.golden-title{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:10px}
+.golden-row{display:flex;gap:8px;font-size:12px;padding:3px 0}
+.gq{color:var(--muted);min-width:160px}.ga{color:var(--green);font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span>Flutter</span> UI Layout Cheat Sheet</h1>
+  <p>Annotated mockup · widget tree · code · live example UI — all in one view</p>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="show('row')">Row</button>
+    <button class="nav-btn" onclick="show('col')">Column</button>
+    <button class="nav-btn" onclick="show('stack')">Stack</button>
+    <button class="nav-btn" onclick="show('space')">Expanded / Spacer</button>
+    <button class="nav-btn" onclick="show('list')">ListView</button>
+    <button class="nav-btn" onclick="show('grid')">GridView</button>
+    <button class="nav-btn" onclick="show('sliver')">Slivers</button>
+    <button class="nav-btn" onclick="show('pageview')">PageView</button>
+    <button class="nav-btn" onclick="show('responsive')">Responsive</button>
+    <button class="nav-btn" onclick="show('realworld')">Real World</button>
+    <button class="nav-btn" onclick="show('rule')">Decision Guide</button>
+  </nav>
+</div>
+
+<div class="container">
+
+<!-- ══════ ROW ══════ -->
+<div id="row" class="section active">
+  <div class="sec-title">Row</div>
+  <div class="sec-desc">Children sit side by side. Main axis = horizontal. Ask: "are these next to each other?" → Row.</div>
+  <div class="entry">
+    <!-- mockup -->
+    <div>
+      <div class="phone">
+        <div class="phone-status"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+        <div class="phone-body">
+          <div class="lb" style="margin-top:10px">
+            <div class="lb-tag b">Row — avatar + name + edit</div>
+            <div class="lb-border b" style="display:flex;gap:7px;align-items:center">
+              <div class="lb" style="margin-top:9px"><div class="lb-tag p">CircleAvatar</div><div class="lb-border p mc mb" style="width:30px;height:30px;border-radius:50%;font-size:9px;margin-top:1px">6E</div></div>
+              <div class="lb" style="flex:1;margin-top:9px"><div class="lb-tag g">Expanded→Column</div><div class="lb-border g" style="display:flex;flex-direction:column;gap:3px"><div class="mc mgy" style="height:8px;border-radius:2px"></div><div class="mc mgy" style="height:7px;width:65%;border-radius:2px"></div></div></div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag o">TextButton</div><div class="lb-border o mc mo" style="padding:3px 7px;font-size:9px;margin-top:1px">Edit</div></div>
+            </div>
+          </div>
+          <div class="lb" style="margin-top:12px">
+            <div class="lb-tag b">Row — origin → dest</div>
+            <div class="lb-border b" style="display:flex;gap:4px;align-items:center">
+              <div class="lb" style="flex:1;margin-top:9px"><div class="lb-tag t">Expanded</div><div class="lb-border t mc mt" style="height:26px;font-size:9px">BLR</div></div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag p">Column</div><div class="lb-border p" style="display:flex;flex-direction:column;align-items:center;padding:2px 4px;gap:2px"><div style="font-size:8px;color:var(--muted)">2h 10m</div><div style="height:1px;width:28px;background:var(--border)"></div><div style="font-size:8px;color:var(--green)">Nonstop</div></div></div>
+              <div class="lb" style="flex:1;margin-top:9px"><div class="lb-tag t">Expanded</div><div class="lb-border t mc mt" style="height:26px;font-size:9px">DEL</div></div>
+            </div>
+          </div>
+          <div class="lb" style="margin-top:12px">
+            <div class="lb-tag b">Row — price + book</div>
+            <div class="lb-border b" style="display:flex;gap:5px;align-items:center">
+              <div class="lb" style="margin-top:9px"><div class="lb-tag y">Spacer</div><div style="flex:1;min-width:8px"></div></div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag o">Text</div><div class="lb-border o mc mo" style="padding:3px 6px;font-size:10px">₹4,299</div></div>
+              <div class="lb" style="flex:1;margin-top:9px"><div class="lb-tag g">ElevatedButton</div><div class="lb-border g mc mg" style="height:25px;font-size:9px">Book</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- anno -->
+    <div>
+      <div class="anno-name">Row</div>
+      <div class="tags"><span class="tag tb">horizontal</span><span class="tag tg">mainAxis = horizontal</span></div>
+      <div class="anno-when">Any time items sit <strong>side by side</strong>. Flight card uses 3 Rows — one for avatar+name+edit, one for origin→dest, one for price+CTA.</div>
+      <ul class="kp">
+        <li>mainAxisAlignment → spread horizontally</li>
+        <li>crossAxisAlignment → align vertically</li>
+        <li>Expanded fills remaining width in Row</li>
+        <li>Spacer pushes siblings to opposite ends</li>
+      </ul>
+      <div class="tree">
+<span class="tn">Row</span>
+  ├── <span class="tn">CircleAvatar</span>
+  ├── <span class="tn">Expanded</span> <span class="tc">← fills gap</span>
+  │     └── <span class="tn">Column</span>(name, role)
+  └── <span class="tn">TextButton</span>('Edit')</div>
+    </div>
+    <!-- code -->
+    <div>
+      <div class="code-block">
+        <div class="code-bar"><div class="cd" style="background:#ff7b72"></div><div class="cd" style="background:#f0883e"></div><div class="cd" style="background:#3fb950"></div> row patterns</div>
+        <pre><span class="cmt">// avatar | name | edit</span>
+<span class="fn">Row</span><span class="punc">(</span>
+  <span class="prop">children</span><span class="punc">: [</span>
+    <span class="fn">CircleAvatar</span><span class="punc">(),</span>
+    <span class="fn">Expanded</span><span class="punc">(</span>
+      <span class="prop">child</span><span class="punc">:</span> <span class="fn">Column</span><span class="punc">([</span>
+        <span class="fn">Text</span><span class="punc">(</span><span class="str">'Name'</span><span class="punc">),</span>
+        <span class="fn">Text</span><span class="punc">(</span><span class="str">'role'</span><span class="punc">),</span>
+      <span class="punc">]),</span>
+    <span class="punc">),</span>
+    <span class="fn">TextButton</span><span class="punc">(</span>
+      <span class="prop">onPressed</span><span class="punc">: () {},</span>
+      <span class="prop">child</span><span class="punc">:</span> <span class="fn">Text</span><span class="punc">(</span><span class="str">'Edit'</span><span class="punc">),</span>
+    <span class="punc">),</span>
+  <span class="punc">],</span>
+<span class="punc">)</span>
+
+<span class="cmt">// price left-push, button right</span>
+<span class="fn">Row</span><span class="punc">(</span>
+  <span class="prop">children</span><span class="punc">: [</span>
+    <span class="fn">Spacer</span><span class="punc">(),</span>
+    <span class="fn">Text</span><span class="punc">(</span><span class="str">'₹4,299'</span><span class="punc">),</span>
+    <span class="fn">SizedBox</span><span class="punc">(</span><span class="prop">width</span><span class="punc">:</span> <span class="num">8</span><span class="punc">),</span>
+    <span class="fn">ElevatedButton</span><span class="punc">(</span>
+      <span class="prop">onPressed</span><span class="punc">: () {},</span>
+      <span class="prop">child</span><span class="punc">:</span> <span class="fn">Text</span><span class="punc">(</span><span class="str">'Book'</span><span class="punc">),</span>
+    <span class="punc">),</span>
+  <span class="punc">],</span>
+<span class="punc">)</span></pre>
+      </div>
+    </div>
+    <!-- example UI -->
+    <div class="ex-ui">
+      <div class="ex-label">example UI — flight card</div>
+      <div class="ex-body">
+        <div class="fcard">
+          <div class="fcard-top">
+            <div class="airline-logo al-indigo">6E</div>
+            <div class="route-info">
+              <div class="route-main">BLR <span style="color:#9ca3af;font-weight:400;font-size:11px">→</span> DEL <span class="stop-pill">Non-stop</span></div>
+              <div class="route-sub">06:00 → 08:10 · 2h 10m</div>
+            </div>
+            <div class="price-badge">₹4,299</div>
+          </div>
+          <button class="book-btn">Book Now</button>
+        </div>
+        <div class="fcard">
+          <div class="fcard-top">
+            <div class="airline-logo al-air">AI</div>
+            <div class="route-info">
+              <div class="route-main">BLR <span style="color:#9ca3af;font-weight:400;font-size:11px">→</span> DEL</div>
+              <div class="route-sub">07:30 → 09:55 · 2h 25m</div>
+            </div>
+            <div class="price-badge">₹4,999</div>
+          </div>
+          <button class="book-btn" style="background:#e50914">Book Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ COLUMN ══════ -->
+<div id="col" class="section">
+  <div class="sec-title">Column</div>
+  <div class="sec-desc">Children stack top to bottom. Every screen's skeleton is a Column inside Scaffold body.</div>
+  <div class="entry">
+    <div>
+      <div class="phone">
+        <div class="phone-status"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+        <div class="phone-body">
+          <div class="lb" style="margin-top:10px">
+            <div class="lb-tag b">Column — screen layout</div>
+            <div class="lb-border b" style="display:flex;flex-direction:column;gap:6px">
+              <div class="lb" style="margin-top:9px"><div class="lb-tag o">AppBar</div><div class="lb-border o mc mo" style="height:24px;font-size:9px">Flights</div></div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag g">Image/Hero</div><div class="lb-border g mc mg" style="height:52px;font-size:9px">banner</div></div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag p">Column — details</div>
+                <div class="lb-border p" style="display:flex;flex-direction:column;gap:4px">
+                  <div class="mc mgy" style="height:9px;border-radius:2px"></div>
+                  <div class="mc mgy" style="height:8px;width:70%;border-radius:2px"></div>
+                  <div class="mc mgy" style="height:8px;width:50%;border-radius:2px"></div>
+                </div>
+              </div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag y">Spacer → pushes btn</div><div style="height:8px"></div></div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag t">ElevatedButton</div><div class="lb-border t mc mt" style="height:24px;font-size:9px">Book Now</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="anno-name">Column</div>
+      <div class="tags"><span class="tag tb">vertical</span><span class="tag tg">top → bottom</span></div>
+      <div class="anno-when">Every screen is basically a Column. Image → title → description → <strong>Spacer</strong> → CTA. Spacer at the end pins the button to the bottom.</div>
+      <ul class="kp">
+        <li>crossAxisAlignment.stretch → children fill width</li>
+        <li>crossAxisAlignment.start → left-align children</li>
+        <li>Spacer() → pushes CTA to bottom of screen</li>
+        <li>Expanded(child: ListView) → list fills remaining height</li>
+      </ul>
+      <div class="tree">
+<span class="tn">Scaffold</span>
+  └── body: <span class="tn">Column</span>
+        ├── <span class="tn">FlightImage</span>
+        ├── <span class="tn">Padding</span>
+        │     └── <span class="tn">Column</span>
+        │           ├── <span class="tn">Text</span>(title)
+        │           └── <span class="tn">Text</span>(sub)
+        ├── <span class="tn">Spacer</span>() <span class="tc">← push down</span>
+        └── <span class="tn">ElevatedButton</span></div>
+    </div>
+    <div>
+      <div class="code-block">
+        <div class="code-bar"><div class="cd" style="background:#ff7b72"></div><div class="cd" style="background:#f0883e"></div><div class="cd" style="background:#3fb950"></div> detail screen</div>
+        <pre><span class="fn">Scaffold</span><span class="punc">(</span>
+  <span class="prop">body</span><span class="punc">:</span> <span class="fn">Column</span><span class="punc">(</span>
+    <span class="prop">crossAxisAlignment</span><span class="punc">:</span>
+      <span class="fn">CrossAxisAlignment</span><span class="punc">.</span><span class="val">start</span><span class="punc">,</span>
+    <span class="prop">children</span><span class="punc">: [</span>
+      <span class="fn">FlightBannerImage</span><span class="punc">(),</span>
+      <span class="fn">Padding</span><span class="punc">(</span>
+        <span class="prop">padding</span><span class="punc">:</span>
+          <span class="fn">EdgeInsets</span><span class="punc">.</span><span class="val">all</span><span class="punc">(</span><span class="num">16</span><span class="punc">),</span>
+        <span class="prop">child</span><span class="punc">:</span> <span class="fn">Column</span><span class="punc">(</span>
+          <span class="prop">crossAxisAlignment</span><span class="punc">:</span>
+            <span class="fn">CrossAxisAlignment</span><span class="punc">.</span><span class="val">start</span><span class="punc">,</span>
+          <span class="prop">children</span><span class="punc">: [</span>
+            <span class="fn">Text</span><span class="punc">(</span><span class="str">'IndiGo 6E-202'</span><span class="punc">),</span>
+            <span class="fn">SizedBox</span><span class="punc">(</span><span class="prop">height</span><span class="punc">:</span> <span class="num">4</span><span class="punc">),</span>
+            <span class="fn">Text</span><span class="punc">(</span><span class="str">'Non-stop · 2h 10m'</span><span class="punc">),</span>
+          <span class="punc">],</span>
+        <span class="punc">),</span>
+      <span class="punc">),</span>
+      <span class="fn">Spacer</span><span class="punc">(),</span>
+      <span class="fn">ElevatedButton</span><span class="punc">(</span>
+        <span class="prop">onPressed</span><span class="punc">: () {},</span>
+        <span class="prop">child</span><span class="punc">:</span> <span class="fn">Text</span><span class="punc">(</span><span class="str">'Book Now'</span><span class="punc">),</span>
+      <span class="punc">),</span>
+    <span class="punc">],</span>
+  <span class="punc">),</span>
+<span class="punc">)</span></pre>
+      </div>
+    </div>
+    <div class="ex-ui">
+      <div class="ex-label">example UI — flight detail</div>
+      <div style="background:#667eea;height:90px;display:flex;align-items:center;justify-content:center">
+        <div style="text-align:center">
+          <div style="font-size:22px;color:#fff;font-weight:700">BLR → DEL</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.8)">IndiGo 6E-202</div>
+        </div>
+      </div>
+      <div style="padding:14px;display:flex;flex-direction:column;gap:6px;background:#fff">
+        <div style="font-size:15px;font-weight:700;color:#111">IndiGo 6E-202</div>
+        <div style="font-size:12px;color:#666">Non-stop · 2h 10m</div>
+        <div style="font-size:12px;color:#666">06:00 BLR → 08:10 DEL</div>
+        <div style="height:1px;background:#eee;margin:4px 0"></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#666"><span>Base fare</span><span>₹3,899</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#666"><span>Taxes</span><span>₹400</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;color:#111"><span>Total</span><span style="color:#16a34a">₹4,299</span></div>
+        <button class="book-btn" style="margin-top:6px">Book Now — ₹4,299</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ STACK ══════ -->
+<div id="stack" class="section">
+  <div class="sec-title">Stack</div>
+  <div class="sec-desc">One widget on top of another. "Badge", "overlay", "floating", "corner button" → Stack.</div>
+  <div class="entry">
+    <div>
+      <div class="phone">
+        <div class="phone-status"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+        <div class="phone-body">
+          <div class="lb" style="margin-top:10px">
+            <div class="lb-tag b">Stack</div>
+            <div class="lb-border b" style="position:relative;height:78px">
+              <div class="lb" style="position:absolute;inset:0;margin-top:9px"><div class="lb-tag g">base: Image</div><div class="lb-border g" style="height:66px;background:#0e2015;border-radius:5px;display:flex;align-items:center;justify-content:center;color:var(--green);font-size:9px">Banner Image</div></div>
+              <div class="lb" style="position:absolute;top:12px;right:5px"><div class="lb-tag o">Positioned(top,right)</div><div class="lb-border o mc mo" style="padding:2px 7px;border-radius:20px;font-size:8px;margin-top:8px">Skip</div></div>
+              <div class="lb" style="position:absolute;bottom:3px;left:5px"><div class="lb-tag t">Positioned(bottom,left)</div><div class="lb-border t mc mt" style="padding:2px 8px;border-radius:20px;font-size:8px;margin-top:8px">₹2,499</div></div>
+            </div>
+          </div>
+          <div class="lb" style="margin-top:14px">
+            <div class="lb-tag b">Stack + clipBehavior:none</div>
+            <div class="lb-border b" style="display:flex;align-items:center;gap:8px">
+              <div style="position:relative;display:inline-block;margin-top:9px">
+                <div class="lb"><div class="lb-tag p">CircleAvatar</div><div class="lb-border p mc mp" style="width:36px;height:36px;border-radius:50%;font-size:9px;margin-top:1px">A</div></div>
+                <div style="position:absolute;top:-3px;right:-3px;width:13px;height:13px;border-radius:50%;background:var(--red);color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid #0d1117">3</div>
+                <div style="position:absolute;bottom:-14px;right:-28px;white-space:nowrap;font-size:8px;color:var(--red);font-family:'JetBrains Mono',monospace">Positioned badge</div>
+              </div>
+              <div style="flex:1;margin-left:22px;display:flex;flex-direction:column;gap:4px"><div class="mc mgy" style="height:8px;border-radius:2px"></div><div class="mc mgy" style="height:7px;width:55%;border-radius:2px"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="anno-name">Stack</div>
+      <div class="tags"><span class="tag tb">overlay</span><span class="tag tr">Positioned inside</span></div>
+      <div class="anno-when">Keywords → Stack: <strong>"badge on"</strong>, <strong>"floating over"</strong>, <strong>"skip top-right"</strong>, <strong>"price on image"</strong>. First child = base, rest float on top.</div>
+      <ul class="kp">
+        <li>Positioned → exact top/right/bottom/left</li>
+        <li>Align → semantic (bottomRight, topCenter)</li>
+        <li>clipBehavior: Clip.none → badge can overflow</li>
+        <li>Children draw in order — last child on top</li>
+      </ul>
+      <div class="tree">
+<span class="tn">Stack</span>
+  ├── <span class="tn">BannerImage</span>() <span class="tc">← base</span>
+  ├── <span class="tn">Positioned</span>(top,right)
+  │     └── <span class="tn">SkipButton</span>()
+  └── <span class="tn">Positioned</span>(bottom,left)
+        └── <span class="tn">PriceChip</span>()</div>
+    </div>
+    <div>
+      <div class="code-block">
+        <div class="code-bar"><div class="cd" style="background:#ff7b72"></div><div class="cd" style="background:#f0883e"></div><div class="cd" style="background:#3fb950"></div> banner + badge</div>
+        <pre><span class="cmt">// banner with overlays</span>
+<span class="fn">Stack</span><span class="punc">(</span>
+  <span class="prop">children</span><span class="punc">: [</span>
+    <span class="fn">Image</span><span class="punc">.</span><span class="val">network</span><span class="punc">(</span><span class="val">url</span><span class="punc">,</span>
+      <span class="prop">fit</span><span class="punc">:</span> <span class="fn">BoxFit</span><span class="punc">.</span><span class="val">cover</span><span class="punc">),</span>
+    <span class="fn">Positioned</span><span class="punc">(</span>
+      <span class="prop">top</span><span class="punc">:</span> <span class="num">12</span><span class="punc">,</span> <span class="prop">right</span><span class="punc">:</span> <span class="num">12</span><span class="punc">,</span>
+      <span class="prop">child</span><span class="punc">:</span> <span class="fn">SkipButton</span><span class="punc">(),</span>
+    <span class="punc">),</span>
+    <span class="fn">Positioned</span><span class="punc">(</span>
+      <span class="prop">bottom</span><span class="punc">:</span> <span class="num">12</span><span class="punc">,</span> <span class="prop">left</span><span class="punc">:</span> <span class="num">12</span><span class="punc">,</span>
+      <span class="prop">child</span><span class="punc">:</span> <span class="fn">PriceChip</span><span class="punc">(</span><span class="str">'₹2,499'</span><span class="punc">),</span>
+    <span class="punc">),</span>
+  <span class="punc">],</span>
+<span class="punc">)</span>
+
+<span class="cmt">// avatar + notification badge</span>
+<span class="fn">Stack</span><span class="punc">(</span>
+  <span class="prop">clipBehavior</span><span class="punc">:</span> <span class="fn">Clip</span><span class="punc">.</span><span class="val">none</span><span class="punc">,</span>
+  <span class="prop">children</span><span class="punc">: [</span>
+    <span class="fn">CircleAvatar</span><span class="punc">(</span><span class="prop">radius</span><span class="punc">:</span> <span class="num">20</span><span class="punc">),</span>
+    <span class="fn">Positioned</span><span class="punc">(</span>
+      <span class="prop">top</span><span class="punc">: -</span><span class="num">2</span><span class="punc">,</span> <span class="prop">right</span><span class="punc">: -</span><span class="num">2</span><span class="punc">,</span>
+      <span class="prop">child</span><span class="punc">:</span> <span class="fn">BadgeDot</span><span class="punc">(</span><span class="num">3</span><span class="punc">),</span>
+    <span class="punc">),</span>
+  <span class="punc">],</span>
+<span class="punc">)</span></pre>
+      </div>
+    </div>
+    <div class="ex-ui">
+      <div class="ex-label">example UI — banner + badge</div>
+      <div style="padding:12px;background:#f9fafb;display:flex;flex-direction:column;gap:10px">
+        <div class="banner-stack">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;padding:12px">
+            <div><div style="font-size:13px;color:rgba(255,255,255,.7)">Flash Sale</div><div style="font-size:18px;font-weight:700;color:#fff">Mumbai → Goa</div></div>
+          </div>
+          <div class="banner-badge">🔥 Sale</div>
+          <div class="banner-text"><div class="banner-title">₹2,499 onwards</div><div class="banner-sub">Limited seats left</div></div>
+          <button class="banner-skip">Skip</button>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;background:#fff;padding:10px 12px;border-radius:10px;border:1px solid #eee">
+          <div style="position:relative">
+            <div style="width:44px;height:44px;border-radius:50%;background:#ede9fe;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#6d28d9">A</div>
+            <div style="position:absolute;top:-2px;right:-2px;width:16px;height:16px;border-radius:50%;background:#ef4444;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff">3</div>
+          </div>
+          <div><div style="font-size:13px;font-weight:600;color:#111">Anurag Sharma</div><div style="font-size:11px;color:#666">3 notifications pending</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ EXPANDED / SPACER ══════ -->
+<div id="space" class="section">
+  <div class="sec-title">Expanded · Spacer · SizedBox</div>
+  <div class="sec-desc">Control how children share, fill, and space themselves inside Row / Column.</div>
+  <div class="entry">
+    <div>
+      <div class="phone">
+        <div class="phone-status"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+        <div class="phone-body">
+          <div class="lb" style="margin-top:10px"><div class="lb-tag b">Row</div>
+            <div class="lb-border b" style="display:flex;gap:5px;align-items:center">
+              <div class="lb" style="margin-top:9px"><div class="lb-tag o">Icon (fixed)</div><div class="lb-border o mc mo" style="width:24px;height:24px;font-size:11px">🔍</div></div>
+              <div class="lb" style="flex:1;margin-top:9px"><div class="lb-tag g">Expanded → TextField</div><div class="lb-border g mc mg" style="height:24px;font-size:8px">Search...</div></div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag p">Icon (fixed)</div><div class="lb-border p mc mp" style="width:24px;height:24px;font-size:10px">⚙</div></div>
+            </div>
+          </div>
+          <div class="lb" style="margin-top:12px"><div class="lb-tag b">Row — Spacer</div>
+            <div class="lb-border b" style="display:flex;align-items:center">
+              <div class="lb" style="margin-top:9px"><div class="lb-tag t">Text</div><div class="lb-border t" style="font-size:9px;color:var(--teal);padding:3px 5px">My Trips</div></div>
+              <div class="lb" style="flex:1;margin-top:9px;display:flex;justify-content:center"><div class="lb-tag y">Spacer</div></div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag g">TextButton</div><div class="lb-border g mc mg" style="padding:2px 7px;font-size:9px">Edit</div></div>
+            </div>
+          </div>
+          <div class="lb" style="margin-top:12px"><div class="lb-tag b">Row — flex ratio 2:1</div>
+            <div class="lb-border b" style="display:flex;gap:4px">
+              <div class="lb" style="flex:2;margin-top:9px"><div class="lb-tag o">Expanded(flex:2)</div><div class="lb-border o mc mo" style="height:24px;font-size:9px">Flights</div></div>
+              <div class="lb" style="flex:1;margin-top:9px"><div class="lb-tag p">Expanded(flex:1)</div><div class="lb-border p mc mp" style="height:24px;font-size:9px">Stays</div></div>
+            </div>
+          </div>
+          <div class="lb" style="margin-top:12px"><div class="lb-tag b">Column — SizedBox gap</div>
+            <div class="lb-border b" style="display:flex;flex-direction:column;gap:0">
+              <div class="mc mt" style="height:20px;border-radius:4px;font-size:9px">Title</div>
+              <div class="lb" style="margin-top:3px"><div class="lb-tag y">SizedBox(h:8)</div><div style="height:12px"></div></div>
+              <div class="mc mg" style="height:20px;border-radius:4px;font-size:9px">Description</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="anno-name">Expanded · Spacer · SizedBox</div>
+      <div class="tags"><span class="tag tb">space control</span><span class="tag tg">Row/Column only</span></div>
+      <div class="anno-when"><strong>Expanded</strong> fills all remaining space. <strong>Spacer</strong> is invisible Expanded that pushes. <strong>SizedBox</strong> is a fixed gap or box.</div>
+      <ul class="kp">
+        <li>Expanded(flex:2) vs (flex:1) → 2:1 ratio</li>
+        <li>Spacer() between items → pushes to opposite ends</li>
+        <li>SizedBox(height:16) → 16px vertical gap</li>
+        <li>SizedBox.shrink() → zero-space placeholder</li>
+      </ul>
+      <div class="tree">
+<span class="tn">Row</span>
+  ├── <span class="tn">Icon</span>(search) <span class="tc">← fixed</span>
+  ├── <span class="tn">Expanded</span>     <span class="tc">← fills all</span>
+  │     └── <span class="tn">TextField</span>
+  └── <span class="tn">Icon</span>(filter) <span class="tc">← fixed</span>
+
+<span class="tn">Row</span>
+  ├── <span class="tn">Text</span>('My Trips')
+  ├── <span class="tn">Spacer</span>()   <span class="tc">← push apart</span>
+  └── <span class="tn">TextButton</span>('Edit')</div>
+    </div>
+    <div>
+      <div class="code-block">
+        <div class="code-bar"><div class="cd" style="background:#ff7b72"></div><div class="cd" style="background:#f0883e"></div><div class="cd" style="background:#3fb950"></div> space patterns</div>
+        <pre><span class="cmt">// icon|searchbar(fills)|icon</span>
+<span class="fn">Row</span><span class="punc">(</span><span class="prop">children</span><span class="punc">: [</span>
+  <span class="fn">Icon</span><span class="punc">(</span><span class="fn">Icons</span><span class="punc">.</span><span class="val">search</span><span class="punc">),</span>
+  <span class="fn">Expanded</span><span class="punc">(</span>
+    <span class="prop">child</span><span class="punc">:</span> <span class="fn">TextField</span><span class="punc">()),</span>
+  <span class="fn">Icon</span><span class="punc">(</span><span class="fn">Icons</span><span class="punc">.</span><span class="val">tune</span><span class="punc">),</span>
+<span class="punc">])</span>
+
+<span class="cmt">// title left, button right</span>
+<span class="fn">Row</span><span class="punc">(</span><span class="prop">children</span><span class="punc">: [</span>
+  <span class="fn">Text</span><span class="punc">(</span><span class="str">'My Trips'</span><span class="punc">),</span>
+  <span class="fn">Spacer</span><span class="punc">(),</span>
+  <span class="fn">TextButton</span><span class="punc">(</span>
+    <span class="prop">onPressed</span><span class="punc">: () {},</span>
+    <span class="prop">child</span><span class="punc">:</span> <span class="fn">Text</span><span class="punc">(</span><span class="str">'Edit'</span><span class="punc">),</span>
+  <span class="punc">),</span>
+<span class="punc">])</span>
+
+<span class="cmt">// 2:1 width ratio</span>
+<span class="fn">Row</span><span class="punc">(</span><span class="prop">children</span><span class="punc">: [</span>
+  <span class="fn">Expanded</span><span class="punc">(</span><span class="prop">flex</span><span class="punc">:</span> <span class="num">2</span><span class="punc">,</span>
+    <span class="prop">child</span><span class="punc">:</span> <span class="fn">FlightsTab</span><span class="punc">()),</span>
+  <span class="fn">Expanded</span><span class="punc">(</span><span class="prop">flex</span><span class="punc">:</span> <span class="num">1</span><span class="punc">,</span>
+    <span class="prop">child</span><span class="punc">:</span> <span class="fn">StaysTab</span><span class="punc">()),</span>
+<span class="punc">])</span></pre>
+      </div>
+    </div>
+    <div class="ex-ui">
+      <div class="ex-label">example UI — search + nav</div>
+      <div style="padding:12px;background:#f9fafb;display:flex;flex-direction:column;gap:10px">
+        <div class="search-bar">
+          <span class="sb-icon">🔍</span>
+          <input class="sb-input" placeholder="Search flights, hotels..." readonly>
+          <button class="sb-filter">Filter</button>
+        </div>
+        <div style="display:flex;gap:4px">
+          <div style="flex:1;background:#4f46e5;color:#fff;border-radius:8px;padding:8px;text-align:center;font-size:12px;font-weight:600">Flights</div>
+          <div style="flex:1;background:#fff;color:#374151;border-radius:8px;padding:8px;text-align:center;font-size:12px;font-weight:600;border:1px solid #e5e7eb">Trains</div>
+          <div style="flex:1;background:#fff;color:#374151;border-radius:8px;padding:8px;text-align:center;font-size:12px;font-weight:600;border:1px solid #e5e7eb">Hotels</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:10px 12px;border:1px solid #eee">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:13px;font-weight:700;color:#111">My Trips</span>
+            <button style="background:none;border:none;color:#4f46e5;font-size:12px;font-weight:600;cursor:pointer">View all</button>
+          </div>
+          <div style="font-size:12px;color:#666">BLR → DEL · Mon 23 Jun · 1 pax</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ LISTVIEW ══════ -->
+<div id="list" class="section">
+  <div class="sec-title">ListView.builder</div>
+  <div class="sec-desc">Repeating items that scroll. Lazy — only builds visible items. Flight SRP, orders, chat.</div>
+  <div class="entry">
+    <div>
+      <div class="phone">
+        <div class="phone-status"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+        <div class="phone-body">
+          <div class="lb" style="margin-top:10px"><div class="lb-tag b">ListView.builder</div>
+            <div class="lb-border b" style="display:flex;flex-direction:column;gap:5px">
+              <div class="lb" style="margin-top:9px"><div class="lb-tag g">itemBuilder(0) → FlightCard</div>
+                <div class="lb-border g">
+                  <div class="lb" style="margin-top:9px"><div class="lb-tag o">Row</div>
+                    <div class="lb-border o" style="display:flex;gap:5px;align-items:center">
+                      <div class="mc mb" style="width:26px;height:26px;border-radius:5px;flex-shrink:0;font-size:8px;margin-top:8px">6E</div>
+                      <div class="lb" style="flex:1;margin-top:8px"><div class="lb-tag t">Expanded→Column</div>
+                        <div class="lb-border t" style="display:flex;flex-direction:column;gap:3px">
+                          <div class="mc mgy" style="height:7px;border-radius:2px"></div>
+                          <div class="mc mgy" style="height:6px;width:60%;border-radius:2px"></div>
+                        </div>
+                      </div>
+                      <div class="mc mg" style="padding:2px 5px;font-size:9px;border-radius:3px;flex-shrink:0;margin-top:8px">₹4.2k</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="lb" style="margin-top:9px;opacity:.8"><div class="lb-tag g">itemBuilder(1) → FlightCard</div>
+                <div class="lb-border g" style="display:flex;gap:5px;align-items:center;padding:5px">
+                  <div class="mc mp" style="width:26px;height:26px;border-radius:5px;flex-shrink:0;font-size:8px">AI</div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+                    <div class="mc mgy" style="height:7px;border-radius:2px"></div>
+                    <div class="mc mgy" style="height:6px;width:60%;border-radius:2px"></div>
+                  </div>
+                  <div class="mc mg" style="padding:2px 5px;font-size:9px;border-radius:3px;flex-shrink:0">₹4.9k</div>
+                </div>
+              </div>
+              <div style="text-align:center;font-size:8px;color:var(--muted)">↓ lazy scroll</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="anno-name">ListView.builder</div>
+      <div class="tags"><span class="tag tb">lazy</span><span class="tag tg">repeating</span></div>
+      <div class="anno-when">Any repeating same-shape items. <strong>builder() only renders visible items</strong> — critical for 50+ items. Never use ListView() with children list for dynamic data.</div>
+      <ul class="kp">
+        <li>ListView() → max 10 static children</li>
+        <li>ListView.builder → always for dynamic data</li>
+        <li>ListView.separated → with Divider between</li>
+        <li>shrinkWrap:true + NeverScrollable → inside Column</li>
+      </ul>
+      <div class="tree">
+<span class="tn">ListView.builder</span>
+  itemCount: flights.length
+  itemBuilder: (ctx, i) =>
+    <span class="tn">FlightCard</span>(flights[i])
+      └── <span class="tn">Row</span>
+            ├── AirlineLogo
+            ├── <span class="tn">Expanded</span> → <span class="tn">Column</span>
+            └── PriceText</div>
+    </div>
+    <div>
+      <div class="code-block">
+        <div class="code-bar"><div class="cd" style="background:#ff7b72"></div><div class="cd" style="background:#f0883e"></div><div class="cd" style="background:#3fb950"></div> lazy list</div>
+        <pre><span class="fn">ListView</span><span class="punc">.</span><span class="val">builder</span><span class="punc">(</span>
+  <span class="prop">padding</span><span class="punc">:</span>
+    <span class="fn">EdgeInsets</span><span class="punc">.</span><span class="val">all</span><span class="punc">(</span><span class="num">16</span><span class="punc">),</span>
+  <span class="prop">itemCount</span><span class="punc">:</span> <span class="val">flights</span><span class="punc">.</span><span class="val">length</span><span class="punc">,</span>
+  <span class="prop">itemBuilder</span><span class="punc">: (</span><span class="val">ctx</span><span class="punc">,</span> <span class="val">i</span><span class="punc">) {</span>
+    <span class="kw">final</span> <span class="val">f</span> <span class="punc">=</span> <span class="val">flights</span><span class="punc">[</span><span class="val">i</span><span class="punc">];</span>
+    <span class="kw">return</span> <span class="fn">Padding</span><span class="punc">(</span>
+      <span class="prop">padding</span><span class="punc">:</span>
+        <span class="fn">EdgeInsets</span><span class="punc">.</span><span class="val">only</span><span class="punc">(</span>
+          <span class="prop">bottom</span><span class="punc">:</span> <span class="num">8</span><span class="punc">),</span>
+      <span class="prop">child</span><span class="punc">:</span> <span class="fn">FlightCard</span><span class="punc">(</span>
+        <span class="prop">flight</span><span class="punc">:</span> <span class="val">f</span><span class="punc">),</span>
+    <span class="punc">);</span>
+  <span class="punc">},</span>
+<span class="punc">)</span>
+
+<span class="cmt">// with dividers</span>
+<span class="fn">ListView</span><span class="punc">.</span><span class="val">separated</span><span class="punc">(</span>
+  <span class="prop">itemCount</span><span class="punc">:</span> <span class="val">items</span><span class="punc">.</span><span class="val">length</span><span class="punc">,</span>
+  <span class="prop">separatorBuilder</span><span class="punc">:</span>
+    <span class="punc">(_, __) =></span> <span class="fn">Divider</span><span class="punc">(),</span>
+  <span class="prop">itemBuilder</span><span class="punc">: (_, </span><span class="val">i</span><span class="punc">) =></span>
+    <span class="fn">ItemTile</span><span class="punc">(</span><span class="val">items</span><span class="punc">[</span><span class="val">i</span><span class="punc">]),</span>
+<span class="punc">)</span></pre>
+      </div>
+    </div>
+    <div class="ex-ui">
+      <div class="ex-label">example UI — flight results list</div>
+      <div style="background:#f9fafb;padding:10px;display:flex;flex-direction:column;gap:7px">
+        <div class="fcard" style="padding:10px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <div class="airline-logo al-indigo" style="width:32px;height:32px;font-size:10px">6E</div>
+            <div style="flex:1"><div style="font-size:12px;font-weight:700;color:#111">06:00 → 08:10 <span style="background:#dcfce7;color:#15803d;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:700">Non-stop</span></div><div style="font-size:10px;color:#666">2h 10m · IndiGo 6E-202</div></div>
+            <div style="font-size:13px;font-weight:700;color:#16a34a">₹4,299</div>
+          </div>
+        </div>
+        <div class="fcard" style="padding:10px">
+          <div style="display:flex;align-items:center;gap:9px">
+            <div class="airline-logo al-air" style="width:32px;height:32px;font-size:10px">AI</div>
+            <div style="flex:1"><div style="font-size:12px;font-weight:700;color:#111">07:30 → 09:55 <span style="background:#dcfce7;color:#15803d;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:700">Non-stop</span></div><div style="font-size:10px;color:#666">2h 25m · Air India</div></div>
+            <div style="font-size:13px;font-weight:700;color:#16a34a">₹4,999</div>
+          </div>
+        </div>
+        <div class="fcard" style="padding:10px;opacity:.7">
+          <div style="display:flex;align-items:center;gap:9px">
+            <div class="airline-logo al-go" style="width:32px;height:32px;font-size:10px">G8</div>
+            <div style="flex:1"><div style="font-size:12px;font-weight:700;color:#111">09:00 → 12:30 <span style="background:#fef9c3;color:#854d0e;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:700">1 stop</span></div><div style="font-size:10px;color:#666">3h 30m · GoFirst</div></div>
+            <div style="font-size:13px;font-weight:700;color:#16a34a">₹3,499</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ GRIDVIEW ══════ -->
+<div id="grid" class="section">
+  <div class="sec-title">GridView.builder</div>
+  <div class="sec-desc">ListView with multiple columns. Product catalog, image gallery, category grid.</div>
+  <div class="entry">
+    <div>
+      <div class="phone">
+        <div class="phone-status"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+        <div class="phone-body">
+          <div class="lb" style="margin-top:10px"><div class="lb-tag b">GridView.builder (2 cols)</div>
+            <div class="lb-border b" style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+              <div class="lb" style="margin-top:9px"><div class="lb-tag g">ProductCard(0)</div>
+                <div class="lb-border g" style="display:flex;flex-direction:column;gap:3px">
+                  <div class="mc mb" style="height:44px;border-radius:4px;font-size:12px">👟</div>
+                  <div class="lb" style="margin-top:7px"><div class="lb-tag o">Column</div>
+                    <div class="lb-border o" style="display:flex;flex-direction:column;gap:2px">
+                      <div class="mc mgy" style="height:6px;border-radius:2px"></div>
+                      <div class="mc mg" style="height:7px;border-radius:2px;font-size:8px">₹1,299</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="lb" style="margin-top:9px;opacity:.9"><div class="lb-tag g">ProductCard(1)</div>
+                <div class="lb-border g" style="display:flex;flex-direction:column;gap:3px">
+                  <div class="mc mp" style="height:44px;border-radius:4px;font-size:12px">👜</div>
+                  <div style="display:flex;flex-direction:column;gap:2px;padding:3px">
+                    <div class="mc mgy" style="height:6px;border-radius:2px"></div>
+                    <div class="mc mg" style="height:7px;border-radius:2px;font-size:8px">₹2,499</div>
+                  </div>
+                </div>
+              </div>
+              <div style="opacity:.7;display:flex;flex-direction:column;gap:3px;border:1px dashed #1a3820;border-radius:6px;padding:4px">
+                <div class="mc mt" style="height:44px;border-radius:4px;font-size:12px">🕶</div>
+                <div class="mc mgy" style="height:6px;border-radius:2px"></div>
+                <div class="mc mg" style="height:7px;border-radius:2px;font-size:8px">₹899</div>
+              </div>
+              <div style="opacity:.5;display:flex;flex-direction:column;gap:3px;border:1px dashed #1a3820;border-radius:6px;padding:4px">
+                <div class="mc mo" style="height:44px;border-radius:4px;font-size:12px">⌚</div>
+                <div class="mc mgy" style="height:6px;border-radius:2px"></div>
+                <div class="mc mg" style="height:7px;border-radius:2px;font-size:8px">₹3,999</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="anno-name">GridView.builder</div>
+      <div class="tags"><span class="tag tb">grid</span><span class="tag tg">2D lazy</span></div>
+      <div class="anno-when">When ListView items have equal visual weight and a <strong>2-column or more layout</strong> makes sense — shop, gallery, categories, amenities.</div>
+      <ul class="kp">
+        <li>crossAxisCount:2 → fixed 2 columns</li>
+        <li>maxCrossAxisExtent:200 → auto column count</li>
+        <li>childAspectRatio → controls card height</li>
+        <li>mainAxisSpacing + crossAxisSpacing → gutters</li>
+      </ul>
+      <div class="tree">
+<span class="tn">GridView.builder</span>
+  gridDelegate:
+    SliverGridDelegate
+      WithFixedCrossAxisCount(
+        crossAxisCount: 2)
+  itemBuilder: (_, i) =>
+    <span class="tn">ProductCard</span>(products[i])
+      └── <span class="tn">Column</span>
+            ├── Image
+            ├── Text(name)
+            └── Text(price)</div>
+    </div>
+    <div>
+      <div class="code-block">
+        <div class="code-bar"><div class="cd" style="background:#ff7b72"></div><div class="cd" style="background:#f0883e"></div><div class="cd" style="background:#3fb950"></div> product grid</div>
+        <pre><span class="fn">GridView</span><span class="punc">.</span><span class="val">builder</span><span class="punc">(</span>
+  <span class="prop">padding</span><span class="punc">:</span>
+    <span class="fn">EdgeInsets</span><span class="punc">.</span><span class="val">all</span><span class="punc">(</span><span class="num">12</span><span class="punc">),</span>
+  <span class="prop">gridDelegate</span><span class="punc">:</span>
+    <span class="fn">SliverGridDelegateWith</span>
+    <span class="fn">FixedCrossAxisCount</span><span class="punc">(</span>
+      <span class="prop">crossAxisCount</span><span class="punc">:</span> <span class="num">2</span><span class="punc">,</span>
+      <span class="prop">crossAxisSpacing</span><span class="punc">:</span> <span class="num">10</span><span class="punc">,</span>
+      <span class="prop">mainAxisSpacing</span><span class="punc">:</span> <span class="num">10</span><span class="punc">,</span>
+      <span class="prop">childAspectRatio</span><span class="punc">:</span> <span class="num">0.72</span><span class="punc">,</span>
+    <span class="punc">),</span>
+  <span class="prop">itemCount</span><span class="punc">:</span>
+    <span class="val">products</span><span class="punc">.</span><span class="val">length</span><span class="punc">,</span>
+  <span class="prop">itemBuilder</span><span class="punc">: (_, </span><span class="val">i</span><span class="punc">) =></span>
+    <span class="fn">ProductCard</span><span class="punc">(</span>
+      <span class="val">products</span><span class="punc">[</span><span class="val">i</span><span class="punc">]),</span>
+<span class="punc">)</span></pre>
+      </div>
+    </div>
+    <div class="ex-ui">
+      <div class="ex-label">example UI — product grid</div>
+      <div class="pgrid">
+        <div class="pcard"><div class="pcard-img" style="background:#ede9fe">👟</div><div class="pcard-info"><div class="pcard-name">Air Max Sneakers</div><div><span class="pcard-price">₹1,299</span><span class="pcard-old">₹1,999</span></div></div></div>
+        <div class="pcard"><div class="pcard-img" style="background:#fce7f3">👜</div><div class="pcard-info"><div class="pcard-name">Leather Tote Bag</div><div><span class="pcard-price">₹2,499</span><span class="pcard-old">₹3,500</span></div></div></div>
+        <div class="pcard"><div class="pcard-img" style="background:#e0f2fe">🕶</div><div class="pcard-info"><div class="pcard-name">Aviator Shades</div><div><span class="pcard-price">₹899</span><span class="pcard-old">₹1,200</span></div></div></div>
+        <div class="pcard"><div class="pcard-img" style="background:#fef3c7">⌚</div><div class="pcard-info"><div class="pcard-name">Smart Watch</div><div><span class="pcard-price">₹3,999</span><span class="pcard-old">₹5,499</span></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SLIVERS ══════ -->
+<div id="sliver" class="section">
+  <div class="sec-title">Slivers — CustomScrollView</div>
+  <div class="sec-desc">Header + sticky chips + scrolling list all moving as one. The pattern behind every serious SRP.</div>
+
+  <div class="sliver-diag">
+    <div class="sl-row" style="background:#0e2030"><div class="sl-badge" style="background:#1a4a7a;color:#58a6ff;border:1px solid #1f3a5c">SliverAppBar</div><div class="sl-desc"><b style="color:var(--blue)">Collapsing header.</b> expandedHeight = hero size. pinned:true → toolbar stays. floating:true → reappears on scroll-up. Put search bar in flexibleSpace → FlexibleSpaceBar.</div></div>
+    <div class="sl-row" style="background:#1a1530"><div class="sl-badge" style="background:#3a2f55;color:#d2a8ff;border:1px solid #2e2550">SliverToBoxAdapter</div><div class="sl-desc"><b style="color:var(--purple)">Bridge widget.</b> Normal widgets can't go directly in slivers — wrap them here. Promo banners, section headers, any one-off widget between lists.</div></div>
+    <div class="sl-row" style="background:#0e2015"><div class="sl-badge" style="background:#1a3820;color:#3fb950;border:1px solid #1a3320">SliverPersistentHeader (pinned)</div><div class="sl-desc"><b style="color:var(--green)">Sticky widget.</b> pinned:true → sticks to top while rest scrolls. Filter chips, tabs, "Today/Yesterday" section headers. Needs delegate with minExtent + maxExtent.</div></div>
+    <div class="sl-row"><div class="sl-badge" style="background:#1a1530;color:#d2a8ff;border:1px solid #2e2550">SliverList / SliverGrid</div><div class="sl-desc"><b style="color:var(--purple)">Lazy list.</b> Like ListView.builder but inside CustomScrollView. All above slivers scroll away together as one unified scroll system.</div></div>
+  </div>
+
+  <div class="entry">
+    <div>
+      <div class="phone">
+        <div class="phone-status"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+        <div style="overflow:hidden">
+          <div class="lb" style="padding:5px;margin-top:8px"><div class="lb-tag b">SliverAppBar(pinned, expandedHeight:80)</div>
+            <div class="lb-border b" style="background:#0e2030;padding:8px;border-radius:6px">
+              <div style="font-size:10px;font-weight:700;color:#58a6ff">BLR → DEL · Mon 23 Jun</div>
+              <div style="font-size:8px;color:#79c0ff;margin-top:2px">1 pax · Economy</div>
+            </div>
+          </div>
+          <div class="lb" style="padding:0 5px 4px;margin-top:6px"><div class="lb-tag g">SliverPersistentHeader(pinned:true)</div>
+            <div class="lb-border g" style="display:flex;gap:3px;padding:4px;background:#0e2015;border-radius:6px">
+              <div style="font-size:8px;padding:2px 5px;border-radius:20px;background:#3fb950;color:#0d1117;font-weight:700">Cheapest</div>
+              <div style="font-size:8px;padding:2px 5px;border-radius:20px;background:#161b22;color:#8b949e;border:1px solid var(--border)">Fastest</div>
+              <div style="font-size:8px;padding:2px 5px;border-radius:20px;background:#161b22;color:#8b949e;border:1px solid var(--border)">Non-stop</div>
+            </div>
+          </div>
+          <div class="lb" style="padding:0 5px 5px;margin-top:5px"><div class="lb-tag p">SliverList → FlightCard × n</div>
+            <div class="lb-border p" style="display:flex;flex-direction:column;gap:4px">
+              <div class="lb" style="margin-top:9px"><div class="lb-tag o">FlightCard (Row)</div>
+                <div class="lb-border o" style="display:flex;gap:4px;align-items:center">
+                  <div class="mc mb" style="width:24px;height:24px;border-radius:4px;font-size:8px;flex-shrink:0;margin-top:8px">6E</div>
+                  <div style="flex:1;margin-top:8px;display:flex;flex-direction:column;gap:2px">
+                    <div class="mc mgy" style="height:7px;border-radius:2px"></div>
+                    <div class="mc mgy" style="height:6px;width:60%;border-radius:2px"></div>
+                  </div>
+                  <div class="mc mg" style="padding:2px 5px;font-size:8px;border-radius:3px;flex-shrink:0;margin-top:8px">₹4.2k</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:4px;align-items:center;padding:4px;border:1px solid var(--border);border-radius:5px;opacity:.7">
+                <div class="mc mp" style="width:24px;height:24px;border-radius:4px;font-size:8px;flex-shrink:0">AI</div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div class="mc mgy" style="height:7px;border-radius:2px"></div><div class="mc mgy" style="height:6px;width:55%;border-radius:2px"></div></div>
+                <div class="mc mg" style="padding:2px 5px;font-size:8px;border-radius:3px;flex-shrink:0">₹4.9k</div>
+              </div>
+              <div style="text-align:center;font-size:8px;color:var(--muted)">↓ scrolls</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="anno-name">CustomScrollView</div>
+      <div class="tags"><span class="tag tb">slivers</span><span class="tag tg">unified scroll</span></div>
+      <div class="anno-when">Search header collapses. Filter chips <strong>stay pinned</strong>. Flight cards scroll underneath. All as ONE unified scroll — impossible with Column + ListView.</div>
+      <ul class="kp">
+        <li>SliverAppBar(pinned:true) → toolbar stays visible</li>
+        <li>SliverPersistentHeader(pinned:true) → chips stick</li>
+        <li>SliverList → lazy flight cards</li>
+        <li>SliverToBoxAdapter → any normal widget in between</li>
+      </ul>
+      <div class="tree">
+<span class="tn">CustomScrollView</span>
+  slivers: [
+    <span class="tn">SliverAppBar</span>
+      └── SearchHeader
+    <span class="tn">SliverPersistentHeader</span>
+      └── FilterChips <span class="tc">← sticky</span>
+    <span class="tn">SliverList</span>
+      └── FlightCard × n
+  ]</div>
+    </div>
+    <div>
+      <div class="code-block">
+        <div class="code-bar"><div class="cd" style="background:#ff7b72"></div><div class="cd" style="background:#f0883e"></div><div class="cd" style="background:#3fb950"></div> flights SRP</div>
+        <pre><span class="fn">Scaffold</span><span class="punc">(</span>
+  <span class="prop">body</span><span class="punc">:</span> <span class="fn">CustomScrollView</span><span class="punc">(</span>
+    <span class="prop">slivers</span><span class="punc">: [</span>
+      <span class="fn">SliverAppBar</span><span class="punc">(</span>
+        <span class="prop">pinned</span><span class="punc">:</span> <span class="kw">true</span><span class="punc">,</span>
+        <span class="prop">expandedHeight</span><span class="punc">:</span> <span class="num">80</span><span class="punc">,</span>
+        <span class="prop">flexibleSpace</span><span class="punc">:</span>
+          <span class="fn">FlexibleSpaceBar</span><span class="punc">(</span>
+            <span class="prop">background</span><span class="punc">:</span>
+              <span class="fn">SearchHeader</span><span class="punc">(),</span>
+          <span class="punc">),</span>
+      <span class="punc">),</span>
+      <span class="fn">SliverPersistentHeader</span><span class="punc">(</span>
+        <span class="prop">pinned</span><span class="punc">:</span> <span class="kw">true</span><span class="punc">,</span>
+        <span class="prop">delegate</span><span class="punc">:</span>
+          <span class="fn">_FilterDelegate</span><span class="punc">(),</span>
+      <span class="punc">),</span>
+      <span class="fn">SliverList</span><span class="punc">(</span>
+        <span class="prop">delegate</span><span class="punc">:</span>
+          <span class="fn">SliverChildBuilderDelegate</span><span class="punc">(</span>
+            <span class="punc">(</span><span class="val">ctx</span><span class="punc">,</span> <span class="val">i</span><span class="punc">) =></span>
+              <span class="fn">FlightCard</span><span class="punc">(</span><span class="val">flights</span><span class="punc">[</span><span class="val">i</span><span class="punc">]),</span>
+            <span class="prop">childCount</span><span class="punc">:</span>
+              <span class="val">flights</span><span class="punc">.</span><span class="val">length</span><span class="punc">,</span>
+          <span class="punc">),</span>
+      <span class="punc">),</span>
+    <span class="punc">],</span>
+  <span class="punc">),</span>
+<span class="punc">)</span></pre>
+      </div>
+    </div>
+    <div class="ex-ui">
+      <div class="ex-label">example UI — flights SRP</div>
+      <div style="background:#4f46e5;padding:12px">
+        <div style="font-size:13px;font-weight:700;color:#fff">BLR → DEL · Mon 23 Jun</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.7);margin-top:2px">1 passenger · Economy · Change</div>
+      </div>
+      <div class="chip-row">
+        <button class="chip active">Cheapest</button>
+        <button class="chip inactive">Fastest</button>
+        <button class="chip inactive">Non-stop</button>
+        <button class="chip inactive">Morning</button>
+        <button class="chip inactive">IndiGo</button>
+      </div>
+      <div style="background:#f9fafb;padding:8px;display:flex;flex-direction:column;gap:6px">
+        <div class="fcard" style="padding:9px"><div style="display:flex;align-items:center;gap:9px"><div class="airline-logo al-indigo" style="width:30px;height:30px;font-size:10px">6E</div><div style="flex:1"><div style="font-size:12px;font-weight:700;color:#111">06:00 → 08:10 <span style="background:#dcfce7;color:#15803d;font-size:9px;padding:1px 5px;border-radius:20px">Non-stop</span></div><div style="font-size:10px;color:#666">2h 10m</div></div><div style="font-size:13px;font-weight:700;color:#16a34a">₹4,299</div></div></div>
+        <div class="fcard" style="padding:9px"><div style="display:flex;align-items:center;gap:9px"><div class="airline-logo al-air" style="width:30px;height:30px;font-size:10px">AI</div><div style="flex:1"><div style="font-size:12px;font-weight:700;color:#111">07:30 → 09:55 <span style="background:#dcfce7;color:#15803d;font-size:9px;padding:1px 5px;border-radius:20px">Non-stop</span></div><div style="font-size:10px;color:#666">2h 25m</div></div><div style="font-size:13px;font-weight:700;color:#16a34a">₹4,999</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PAGEVIEW ══════ -->
+<div id="pageview" class="section">
+  <div class="sec-title">PageView</div>
+  <div class="sec-desc">Full-screen swipe navigation. Onboarding, stories, image carousel, TikTok feeds.</div>
+  <div class="entry">
+    <div>
+      <div class="phone">
+        <div class="phone-status"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+        <div style="overflow:hidden">
+          <div class="lb" style="padding:6px;margin-top:8px"><div class="lb-tag b">Stack</div>
+            <div class="lb-border b">
+              <div class="lb" style="margin-top:9px"><div class="lb-tag g">PageView.builder (current:0)</div>
+                <div class="lb-border g" style="background:#0e2030;padding:14px 8px;border-radius:6px;display:flex;flex-direction:column;align-items:center;gap:7px">
+                  <div class="mc mb" style="width:40px;height:40px;border-radius:50%;font-size:16px">✈</div>
+                  <div style="font-size:11px;font-weight:700;color:#58a6ff;text-align:center">Book flights instantly</div>
+                  <div style="font-size:9px;color:#79c0ff;text-align:center">Best prices guaranteed</div>
+                </div>
+              </div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag o">Positioned(bottom) → Row dots</div>
+                <div class="lb-border o" style="display:flex;justify-content:center;gap:4px;padding:5px">
+                  <div style="width:14px;height:5px;border-radius:3px;background:var(--blue)"></div>
+                  <div style="width:5px;height:5px;border-radius:50%;background:var(--border)"></div>
+                  <div style="width:5px;height:5px;border-radius:50%;background:var(--border)"></div>
+                </div>
+              </div>
+              <div class="lb" style="margin-top:9px"><div class="lb-tag t">ElevatedButton</div>
+                <div class="lb-border t mc mt" style="height:24px;font-size:9px;margin:3px 0">Get Started</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="anno-name">PageView</div>
+      <div class="tags"><span class="tag tb">swipe pages</span><span class="tag tg">full screen</span></div>
+      <div class="anno-when"><strong>ListView = scroll through content. PageView = navigate through pages.</strong> Onboarding, stories, image gallery. Dots need onPageChanged + setState.</div>
+      <ul class="kp">
+        <li>PageController → programmatic navigation</li>
+        <li>viewportFraction:0.85 → peek next (carousel)</li>
+        <li>Axis.vertical → TikTok/Reels style</li>
+        <li>onPageChanged → update dots with setState</li>
+      </ul>
+      <div class="tree">
+<span class="tn">Stack</span>
+  ├── <span class="tn">PageView.builder</span>
+  │     onPageChanged: update dot
+  │     └── OnboardPage(pages[i])
+  └── <span class="tn">Positioned</span>(bottom)
+        └── <span class="tn">Column</span>
+              ├── <span class="tn">Row</span>(AnimatedDots)
+              └── <span class="tn">ElevatedButton</span></div>
+    </div>
+    <div>
+      <div class="code-block">
+        <div class="code-bar"><div class="cd" style="background:#ff7b72"></div><div class="cd" style="background:#f0883e"></div><div class="cd" style="background:#3fb950"></div> onboarding</div>
+        <pre><span class="kw">int</span> <span class="val">_page</span> <span class="punc">=</span> <span class="num">0</span><span class="punc">;</span>
+<span class="kw">final</span> <span class="val">_ctrl</span> <span class="punc">=</span>
+  <span class="fn">PageController</span><span class="punc">();</span>
+
+<span class="fn">Stack</span><span class="punc">(</span><span class="prop">children</span><span class="punc">: [</span>
+  <span class="fn">PageView</span><span class="punc">.</span><span class="val">builder</span><span class="punc">(</span>
+    <span class="prop">controller</span><span class="punc">:</span> <span class="val">_ctrl</span><span class="punc">,</span>
+    <span class="prop">itemCount</span><span class="punc">:</span>
+      <span class="val">pages</span><span class="punc">.</span><span class="val">length</span><span class="punc">,</span>
+    <span class="prop">onPageChanged</span><span class="punc">: (</span><span class="val">i</span><span class="punc">) =></span>
+      <span class="fn">setState</span><span class="punc">(()</span>
+        <span class="punc">=></span> <span class="val">_page</span> <span class="punc">=</span> <span class="val">i</span><span class="punc">),</span>
+    <span class="prop">itemBuilder</span><span class="punc">: (_, </span><span class="val">i</span><span class="punc">) =></span>
+      <span class="fn">OnboardPage</span><span class="punc">(</span>
+        <span class="val">pages</span><span class="punc">[</span><span class="val">i</span><span class="punc">]),</span>
+  <span class="punc">),</span>
+  <span class="fn">Positioned</span><span class="punc">(</span>
+    <span class="prop">bottom</span><span class="punc">:</span> <span class="num">24</span><span class="punc">,</span>
+    <span class="prop">left</span><span class="punc">:</span> <span class="num">0</span><span class="punc">,</span>
+    <span class="prop">right</span><span class="punc">:</span> <span class="num">0</span><span class="punc">,</span>
+    <span class="prop">child</span><span class="punc">:</span> <span class="fn">Column</span><span class="punc">(</span>
+      <span class="prop">children</span><span class="punc">: [</span>
+        <span class="fn">DotsRow</span><span class="punc">(</span><span class="val">_page</span><span class="punc">),</span>
+        <span class="fn">NextButton</span><span class="punc">(),</span>
+      <span class="punc">],</span>
+    <span class="punc">),</span>
+  <span class="punc">),</span>
+<span class="punc">])</span></pre>
+      </div>
+    </div>
+    <div class="ex-ui">
+      <div class="ex-label">example UI — onboarding</div>
+      <div class="ob-screen">
+        <div class="ob-icon">✈</div>
+        <div class="ob-title">Book flights at zero fees</div>
+        <div class="ob-sub">Search across 500+ airlines. No hidden charges, ever.</div>
+        <div class="ob-dots">
+          <div class="ob-dot active"></div>
+          <div class="ob-dot"></div>
+          <div class="ob-dot"></div>
+        </div>
+        <button class="ob-btn">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ RESPONSIVE ══════ -->
+<div id="responsive" class="section">
+  <div class="sec-title">Responsive — LayoutBuilder · Wrap · MediaQuery</div>
+  <div class="sec-desc">Adapt layout to parent's available space. Senior devs use LayoutBuilder constantly.</div>
+  <div class="entry">
+    <div>
+      <div class="phone">
+        <div class="phone-status"><div class="ps-dot"></div><div class="ps-dot"></div><div class="ps-dot"></div></div>
+        <div class="phone-body">
+          <div class="lb" style="margin-top:10px"><div class="lb-tag b">LayoutBuilder(constraints.maxWidth)</div>
+            <div class="lb-border b" style="display:flex;flex-direction:column;gap:5px">
+              <div style="font-size:9px;color:var(--muted);text-align:center">width &lt; 600 → Column layout</div>
+              <div class="mc mb" style="height:26px;font-size:9px">Header</div>
+              <div class="mc mg" style="height:26px;font-size:9px">Content</div>
+            </div>
+          </div>
+          <div class="lb" style="margin-top:12px"><div class="lb-tag g">Wrap(spacing:8, runSpacing:8)</div>
+            <div class="lb-border g" style="display:flex;flex-wrap:wrap;gap:3px">
+              <div style="font-size:8px;padding:2px 6px;border-radius:20px;background:#0e2015;color:#3fb950;border:1px solid #1a3820">Non-stop</div>
+              <div style="font-size:8px;padding:2px 6px;border-radius:20px;background:#1a1530;color:#d2a8ff;border:1px solid #2e2550">Morning</div>
+              <div style="font-size:8px;padding:2px 6px;border-radius:20px;background:#1e1508;color:#f0883e;border:1px solid #3a2510">IndiGo</div>
+              <div style="font-size:8px;padding:2px 6px;border-radius:20px;background:#0e2030;color:#58a6ff;border:1px solid #1a3a55">Air India</div>
+              <div style="font-size:8px;padding:2px 6px;border-radius:20px;background:#0e2015;color:#3fb950;border:1px solid #1a3820">Under ₹5k</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="anno-name">LayoutBuilder · Wrap</div>
+      <div class="tags"><span class="tag tb">responsive</span><span class="tag tg">parent-aware</span></div>
+      <div class="anno-when"><strong>LayoutBuilder</strong> responds to parent container size — better than MediaQuery which only knows screen size. <strong>Wrap</strong> = Row that breaks to next line.</div>
+      <ul class="kp">
+        <li>LayoutBuilder → switch Row/Column by width</li>
+        <li>Wrap → filter chips, tags that wrap naturally</li>
+        <li>MediaQuery → screen size, keyboard insets</li>
+        <li>SafeArea → avoid notch + system bars</li>
+      </ul>
+      <div class="tree">
+<span class="tn">LayoutBuilder</span>
+  builder: (ctx, constraints) {
+    final wide =
+      constraints.maxWidth > 600;
+    return wide
+      ? <span class="tn">Row</span>([Left(), Right()])
+      : <span class="tn">Column</span>([Top(), Bottom()]);
+  }</div>
+    </div>
+    <div>
+      <div class="code-block">
+        <div class="code-bar"><div class="cd" style="background:#ff7b72"></div><div class="cd" style="background:#f0883e"></div><div class="cd" style="background:#3fb950"></div> LayoutBuilder + Wrap</div>
+        <pre><span class="fn">LayoutBuilder</span><span class="punc">(</span>
+  <span class="prop">builder</span><span class="punc">: (</span><span class="val">ctx</span><span class="punc">,</span> <span class="val">c</span><span class="punc">) {</span>
+    <span class="kw">final</span> <span class="val">wide</span> <span class="punc">=</span>
+      <span class="val">c</span><span class="punc">.</span><span class="val">maxWidth</span> <span class="punc">></span> <span class="num">600</span><span class="punc">;</span>
+    <span class="kw">return</span> <span class="val">wide</span>
+      <span class="punc">?</span> <span class="fn">Row</span><span class="punc">([</span><span class="fn">Left</span><span class="punc">(),</span> <span class="fn">Right</span><span class="punc">()])</span>
+      <span class="punc">:</span> <span class="fn">Column</span><span class="punc">([</span><span class="fn">Top</span><span class="punc">(),</span> <span class="fn">Bottom</span><span class="punc">()]);</span>
+  <span class="punc">},</span>
+<span class="punc">)</span>
+
+<span class="cmt">// filter chips that wrap</span>
+<span class="fn">Wrap</span><span class="punc">(</span>
+  <span class="prop">spacing</span><span class="punc">:</span> <span class="num">8</span><span class="punc">,</span>
+  <span class="prop">runSpacing</span><span class="punc">:</span> <span class="num">8</span><span class="punc">,</span>
+  <span class="prop">children</span><span class="punc">:</span>
+    <span class="val">filters</span><span class="punc">.</span><span class="val">map</span><span class="punc">((</span><span class="val">f</span><span class="punc">) =></span>
+      <span class="fn">FilterChip</span><span class="punc">(</span>
+        <span class="prop">label</span><span class="punc">:</span> <span class="fn">Text</span><span class="punc">(</span><span class="val">f</span><span class="punc">.</span><span class="val">label</span><span class="punc">),</span>
+        <span class="prop">selected</span><span class="punc">:</span> <span class="val">f</span><span class="punc">.</span><span class="val">active</span><span class="punc">,</span>
+        <span class="prop">onSelected</span><span class="punc">: (</span><span class="val">v</span><span class="punc">) =></span>
+          <span class="fn">setState</span><span class="punc">(()</span>
+            <span class="punc">=></span> <span class="val">f</span><span class="punc">.</span><span class="val">active</span> <span class="punc">=</span> <span class="val">v</span><span class="punc">),</span>
+      <span class="punc">),</span>
+    <span class="punc">).</span><span class="val">toList</span><span class="punc">(),</span>
+<span class="punc">)</span></pre>
+      </div>
+    </div>
+    <div class="ex-ui">
+      <div class="ex-label">example UI — filter chips (Wrap)</div>
+      <div style="padding:14px;background:#fff;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:2px">Filters</div>
+        <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Stops</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span style="padding:5px 12px;border-radius:20px;background:#4f46e5;color:#fff;font-size:11px;font-weight:600">Non-stop</span>
+          <span style="padding:5px 12px;border-radius:20px;background:#f3f4f6;color:#374151;font-size:11px;font-weight:600;border:1px solid #e5e7eb">1 stop</span>
+          <span style="padding:5px 12px;border-radius:20px;background:#f3f4f6;color:#374151;font-size:11px;font-weight:600;border:1px solid #e5e7eb">2+ stops</span>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:#666;margin-bottom:4px">Airlines</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span style="padding:5px 12px;border-radius:20px;background:#4f46e5;color:#fff;font-size:11px;font-weight:600">IndiGo</span>
+          <span style="padding:5px 12px;border-radius:20px;background:#4f46e5;color:#fff;font-size:11px;font-weight:600">Air India</span>
+          <span style="padding:5px 12px;border-radius:20px;background:#f3f4f6;color:#374151;font-size:11px;font-weight:600;border:1px solid #e5e7eb">GoFirst</span>
+          <span style="padding:5px 12px;border-radius:20px;background:#f3f4f6;color:#374151;font-size:11px;font-weight:600;border:1px solid #e5e7eb">SpiceJet</span>
+          <span style="padding:5px 12px;border-radius:20px;background:#f3f4f6;color:#374151;font-size:11px;font-weight:600;border:1px solid #e5e7eb">Vistara</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ REAL WORLD ══════ -->
+<div id="realworld" class="section">
+  <div class="sec-title">Real World Widget Trees</div>
+  <div class="sec-desc">Exact structure of screens you build every day at Scapia.</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px">
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:6px;background:#0e2030;display:flex;align-items:center;justify-content:center;font-size:12px">✈</div><div style="font-size:13px;font-weight:700">Scapia Flights SRP</div></div>
+      <div style="padding:12px"><div class="tree">
+<span class="tn">Scaffold</span>
+  └── <span class="tn">CustomScrollView</span>
+        ├── <span class="tn">SliverAppBar</span> <span class="tc">← collapses</span>
+        │     └── SearchHeader
+        ├── <span class="tn">SliverPersistentHeader</span>
+        │     └── FilterChips <span class="tc">← sticky</span>
+        └── <span class="tn">SliverList</span>
+              └── <span class="tn">FlightCard</span> × n
+                    └── <span class="tn">Row</span>(logo·<span class="tn">Expanded</span>·price)</div></div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:6px;background:#1a1530;display:flex;align-items:center;justify-content:center;font-size:12px">📸</div><div style="font-size:13px;font-weight:700">Instagram Profile</div></div>
+      <div style="padding:12px"><div class="tree">
+<span class="tn">NestedScrollView</span>
+  headerSliverBuilder:
+    ├── <span class="tn">SliverAppBar</span> <span class="tc">← profile</span>
+    │     └── ProfileHeader
+    └── <span class="tn">SliverPersistentHeader</span>
+          └── <span class="tn">TabBar</span> <span class="tc">← pinned</span>
+  body:
+    └── <span class="tn">TabBarView</span>
+          └── <span class="tn">GridView</span> <span class="tc">← photos</span></div></div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:6px;background:#1e0d0d;display:flex;align-items:center;justify-content:center;font-size:12px">💬</div><div style="font-size:13px;font-weight:700">WhatsApp Chat</div></div>
+      <div style="padding:12px"><div class="tree">
+<span class="tn">Scaffold</span>
+  ├── appBar: <span class="tn">AppBar</span>
+  │     └── <span class="tn">Row</span>(avatar·name·icons)
+  ├── body: <span class="tn">ListView.builder</span>
+  │     └── <span class="tn">MessageBubble</span> × n
+  │           └── <span class="tn">Align</span>(left/right)
+  │                 └── <span class="tn">Container</span>
+  └── bottomBar: <span class="tn">Row</span>
+        ├── <span class="tn">Expanded</span> → <span class="tn">TextField</span>
+        └── <span class="tn">IconButton</span>(send)</div></div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:6px;background:#1e1508;display:flex;align-items:center;justify-content:center;font-size:12px">🛒</div><div style="font-size:13px;font-weight:700">Scapia Shop — Product</div></div>
+      <div style="padding:12px"><div class="tree">
+<span class="tn">Scaffold</span>
+  └── <span class="tn">CustomScrollView</span>
+        ├── <span class="tn">SliverAppBar</span>
+        │     └── <span class="tn">PageView</span> <span class="tc">← images</span>
+        ├── <span class="tn">SliverToBoxAdapter</span>
+        │     └── <span class="tn">Column</span>(title·price·desc)
+        ├── <span class="tn">SliverToBoxAdapter</span>
+        │     └── ReviewSection
+        └── <span class="tn">SliverList</span> <span class="tc">← related</span></div></div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:6px;background:#051a1f;display:flex;align-items:center;justify-content:center;font-size:12px">🚀</div><div style="font-size:13px;font-weight:700">Onboarding Screen</div></div>
+      <div style="padding:12px"><div class="tree">
+<span class="tn">Scaffold</span>
+  └── <span class="tn">Stack</span>
+        ├── <span class="tn">PageView.builder</span>
+        │     └── OnboardPage
+        │           └── <span class="tn">Column</span>
+        │                 ├── Image
+        │                 ├── Text(title)
+        │                 └── Text(sub)
+        └── <span class="tn">Positioned</span>(bottom)
+              └── <span class="tn">Column</span>
+                    ├── <span class="tn">Row</span>(dots)
+                    └── <span class="tn">ElevatedButton</span></div></div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <div style="background:var(--bg3);border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:6px;background:#0e2015;display:flex;align-items:center;justify-content:center;font-size:12px">▶</div><div style="font-size:13px;font-weight:700">Spotify / Netflix Home</div></div>
+      <div style="padding:12px"><div class="tree">
+<span class="tn">Scaffold</span>
+  └── <span class="tn">CustomScrollView</span>
+        ├── <span class="tn">SliverAppBar</span> <span class="tc">← shrinks</span>
+        ├── <span class="tn">SliverToBoxAdapter</span>
+        │     └── HeroBanner <span class="tc">(PageView)</span>
+        ├── <span class="tn">SliverToBoxAdapter</span>
+        │     └── HorizontalRow
+        └── <span class="tn">SliverGrid</span> <span class="tc">← content</span></div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ RULE ══════ -->
+<div id="rule" class="section">
+  <div class="sec-title">Decision Guide</div>
+  <div class="sec-desc">One question before touching code: what is the spatial relationship between these children?</div>
+  <div class="rule-grid">
+    <div class="rule-card"><div class="rule-q">side by side?</div><div class="rule-a">Row</div></div>
+    <div class="rule-card"><div class="rule-q">top to bottom?</div><div class="rule-a">Column</div></div>
+    <div class="rule-card"><div class="rule-q">one on top of another?</div><div class="rule-a">Stack</div></div>
+    <div class="rule-card"><div class="rule-q">fill remaining width?</div><div class="rule-a">Expanded</div></div>
+    <div class="rule-card"><div class="rule-q">push items apart?</div><div class="rule-a">Spacer</div></div>
+    <div class="rule-card"><div class="rule-q">fixed gap?</div><div class="rule-a">SizedBox</div></div>
+    <div class="rule-card"><div class="rule-q">repeating same items?</div><div class="rule-a">ListView.builder</div></div>
+    <div class="rule-card"><div class="rule-q">grid of items?</div><div class="rule-a">GridView.builder</div></div>
+    <div class="rule-card"><div class="rule-q">swipe full pages?</div><div class="rule-a">PageView</div></div>
+    <div class="rule-card"><div class="rule-q">collapsing header?</div><div class="rule-a">SliverAppBar</div></div>
+    <div class="rule-card"><div class="rule-q">chips stay pinned?</div><div class="rule-a">SliverPersistentHeader</div></div>
+    <div class="rule-card"><div class="rule-q">header+sticky+list as one?</div><div class="rule-a">CustomScrollView</div></div>
+    <div class="rule-card"><div class="rule-q">normal widget in slivers?</div><div class="rule-a">SliverToBoxAdapter</div></div>
+    <div class="rule-card"><div class="rule-q">tabs + collapsing header?</div><div class="rule-a">NestedScrollView</div></div>
+    <div class="rule-card"><div class="rule-q">chips wrap to next line?</div><div class="rule-a">Wrap</div></div>
+    <div class="rule-card"><div class="rule-q">respond to parent size?</div><div class="rule-a">LayoutBuilder</div></div>
+    <div class="rule-card"><div class="rule-q">badge on widget?</div><div class="rule-a">Stack + Positioned</div></div>
+    <div class="rule-card"><div class="rule-q">exact coord in Stack?</div><div class="rule-a">Positioned</div></div>
+  </div>
+  <div class="golden">
+    <div class="golden-title">The golden distinctions</div>
+    <div class="golden-row"><span class="gq">ListView vs PageView</span><span class="ga">ListView = scroll content · PageView = navigate pages</span></div>
+    <div class="golden-row"><span class="gq">Expanded vs Spacer</span><span class="ga">Expanded wraps a child · Spacer is childless</span></div>
+    <div class="golden-row"><span class="gq">CustomScrollView vs NestedScrollView</span><span class="ga">CSW = mixed sections · NSV = sections + tab body</span></div>
+    <div class="golden-row"><span class="gq">LayoutBuilder vs MediaQuery</span><span class="ga">LB = parent size · MQ = screen size</span></div>
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid #1f3a5c;color:var(--muted);font-size:12px;line-height:1.7">Look at any screenshot → draw widget tree on paper in 30 sec with exact widget names on every region. When that's mechanical, layout is solved.</div>
+  </div>
+</div>
+
+</div>
+<script>
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
